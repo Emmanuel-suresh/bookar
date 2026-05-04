@@ -1,0 +1,180 @@
+/* style.css */
+
+/* 1. General Reset & Foundation */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 2. Header & Navigation */
+header {
+    background: #fff;
+    padding: 15px 5%;
+    border-bottom: 1px solid #eaeaea;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-name {
+    font-size: 1.8rem;
+    font-family: 'Georgia', serif; /* Matching the handwritten style */
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.logo-box {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #333;
+    border-radius: 6px;
+}
+
+.hamburger {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #444;
+}
+
+/* Secondary Nav (The wavy lines in your sketch) */
+.sub-nav {
+    display: flex;
+    gap: 25px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+}
+
+.sub-nav span {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.sub-nav span:hover {
+    color: #000;
+}
+
+/* 3. Hero Section (Main Booking Area) */
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background-color: #fcfcfc;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    font-weight: 300;
+    color: #222;
+}
+
+.hero-subtitle {
+    display: block;
+    margin-bottom: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    padding: 14px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-login {
+    border: 2px solid #333;
+    color: #333;
+}
+
+.btn-signup {
+    background: #333;
+    color: #fff;
+    border: 2px solid #333;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* 4. Grid Section (Cards) */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 60px 5%;
+}
+
+.card {
+    background: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card-img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Skeleton/Wavy line placeholders from sketch */
+.card-line {
+    height: 8px;
+    background: #f0f0f0;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.card-line.short {
+    width: 50%;
+}
+
+/* 5. Responsive Tweaks */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .btn-group { flex-direction: column; align-items: center; }
+    .btn { width: 80%; }
+}
