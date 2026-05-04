@@ -1,6 +1,5 @@
 /* style.css */
 
-/* 1. General Reset & Foundation */
 * {
     margin: 0;
     padding: 0;
@@ -8,91 +7,81 @@
 }
 
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #ffffff;
-    color: #333;
-    line-height: 1.6;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f8f9;
+    color: #2c3335; /* Dark grey from logo */
 }
 
-/* 2. Header & Navigation */
+/* Header & Navigation */
 header {
     background: #fff;
     padding: 15px 5%;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 2px solid #51adaf; /* Teal accent */
 }
 
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .brand-name {
     font-size: 1.8rem;
-    font-family: 'Georgia', serif; /* Matching the handwritten style */
-    font-weight: 600;
-    color: #1a1a1a;
+    font-weight: 700;
+    color: #2c3335;
+    letter-spacing: -0.5px;
 }
 
 .logo-box {
-    width: 32px;
-    height: 32px;
-    border: 2px solid #333;
-    border-radius: 6px;
+    width: 35px;
+    height: 35px;
+    background-color: #51adaf; /* Teal from logo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
 }
 
 .hamburger {
-    font-size: 2rem;
+    font-size: 1.8rem;
     cursor: pointer;
-    color: #444;
+    color: #51adaf;
 }
 
-/* Secondary Nav (The wavy lines in your sketch) */
 .sub-nav {
     display: flex;
-    gap: 25px;
+    gap: 20px;
+    padding-top: 15px;
     font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888;
+    color: #7f8c8d;
+    font-weight: 500;
 }
 
-.sub-nav span {
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.sub-nav span:hover {
-    color: #000;
-}
-
-/* 3. Hero Section (Main Booking Area) */
+/* Hero Section */
 .hero {
     text-align: center;
     padding: 100px 20px;
-    background-color: #fcfcfc;
-    border-bottom: 1px solid #f0f0f0;
+    background-color: #51adaf; /* Teal Background from your image */
+    color: white;
 }
 
 .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 15px;
-    font-weight: 300;
-    color: #222;
+    font-size: 2.8rem;
+    margin-bottom: 10px;
 }
 
 .hero-subtitle {
-    display: block;
+    font-size: 1.2rem;
     margin-bottom: 40px;
-    color: #666;
-    font-style: italic;
+    opacity: 0.9;
 }
 
 .btn-group {
@@ -102,54 +91,52 @@ nav {
 }
 
 .btn {
-    padding: 14px 40px;
-    border-radius: 50px;
+    padding: 14px 45px;
+    border-radius: 4px; /* Squared off a bit like the logo style */
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-block;
+    font-weight: bold;
+    transition: 0.3s;
+    text-transform: uppercase;
+    font-size: 0.9rem;
 }
 
 .btn-login {
-    border: 2px solid #333;
-    color: #333;
+    background: transparent;
+    color: white;
+    border: 2px solid white;
 }
 
 .btn-signup {
-    background: #333;
-    color: #fff;
-    border: 2px solid #333;
+    background: #2c3335; /* Dark grey from logo */
+    color: white;
+    border: 2px solid #2c3335;
 }
 
 .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* 4. Grid Section (Cards) */
+/* Grid Section */
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
     padding: 60px 5%;
 }
 
 .card {
     background: #fff;
-    padding: 10px;
-    border-radius: 12px;
-    transition: transform 0.3s;
-}
-
-.card:hover {
-    transform: scale(1.02);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .card-img {
     width: 100%;
-    aspect-ratio: 16 / 10;
-    background: #f0f0f0;
-    border-radius: 8px;
+    height: 160px;
+    background: #e0e0e0;
+    border-radius: 4px;
     margin-bottom: 15px;
     overflow: hidden;
 }
@@ -160,21 +147,18 @@ nav {
     object-fit: cover;
 }
 
-/* Skeleton/Wavy line placeholders from sketch */
 .card-line {
-    height: 8px;
+    height: 10px;
     background: #f0f0f0;
     margin-bottom: 10px;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
 .card-line.short {
-    width: 50%;
+    width: 40%;
 }
 
-/* 5. Responsive Tweaks */
-@media (max-width: 768px) {
-    .hero h1 { font-size: 2rem; }
+@media (max-width: 600px) {
     .btn-group { flex-direction: column; align-items: center; }
-    .btn { width: 80%; }
+    .btn { width: 100%; max-width: 300px; }
 }
