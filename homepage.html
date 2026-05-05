@@ -3,85 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookMySuite | Premium Indian Stays</title>
+    <title>Luxury Stays | BookMySuite</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:,">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f7f6; }
-        header { background-color: white; padding: 15px 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        nav { display: flex; justify-content: space-between; align-items: center; }
-        .brand-name { font-size: 24px; font-weight: bold; color: #333; }
-        .nav-links { display: flex; gap: 15px; align-items: center; }
-        .btn { padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: background 0.3s; }
-        .btn-primary { background-color: #55b3b3; color: white; border: none; cursor: pointer; }
-        .hero { background-color: #55b3b3; color: white; text-align: center; padding: 80px 5%; }
-        .rooms-grid { display: flex; gap: 30px; padding: 60px 5%; justify-content: center; flex-wrap: wrap; }
-        .card { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 350px; overflow: hidden; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-content { padding: 20px; }
-        .btn-text { color: #7e57c2; text-decoration: none; font-weight: bold; }
-    </style>
 </head>
-<body>
-    <header>
-        <nav>
-            <div class="brand-name">BookMySuite</div>
-            <div class="nav-links" id="auth-links">
-                <!-- Default state: Guest -->
-                <a href="login.html" class="btn" style="color: #4a148c;">Login</a>
-                <a href="signup.html" class="btn btn-primary">Join Now</a>
-            </div>
-        </nav>
+<body class="home-bg">
+    <nav class="glass-nav">
+        <div class="logo">BookMySuite</div>
+        <div class="nav-user" id="userDisplay">
+            <!-- JavaScript will insert: Hi, Emmanuel (BMS-2026-1234) -->
+        </div>
+        <button onclick="logout()" class="logout-link">Logout</button>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-content fade-in">
+            <h1>Experience Pure Elegance</h1>
+            <p>Your sanctuary of comfort and style awaits.</p>
+            <a href="#suites" class="btn-scroll">Explore Suites ↓</a>
+        </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Find Your Perfect Indian Stay</h1>
-                <p>Luxury suites starting from ₹4,999</p>
-                <a href="bookroom.html" class="btn btn-primary" style="margin-top: 30px; display: inline-block; padding: 15px 40px;">Book a Suite</a>
+    <main id="suites" class="suite-container">
+        <h2 class="section-title">Our Signature Suites</h2>
+        
+        <div class="glass-grid">
+            <!-- Suite Card: S7 -->
+            <div class="glass-card">
+                <div class="card-badge">Top Rated</div>
+                <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800" alt="Executive Suite">
+                <div class="card-info">
+                    <h3>Executive Suite S7</h3>
+                    <p>Panoramic city views & private lounge access.</p>
+                    <div class="card-footer">
+                        <span class="price">₹4,999<span>/night</span></span>
+                        <button onclick="location.href='bookroom.html?room=S7'" class="btn-book">Reserve</button>
+                    </div>
+                </div>
             </div>
-        </section>
 
-        <section class="rooms-grid">
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400" alt="Heritage Suite">
-                <div class="card-content">
-                    <h3>Heritage Suites</h3>
-                    <p>Experience royalty.</p>
-                    <a href="bookroom.html" class="btn-text">Check Availability →</a>
+            <!-- Suite Card: N7 -->
+            <div class="glass-card">
+                <div class="card-badge">Popular</div>
+                <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800" alt="Deluxe Room">
+                <div class="card-info">
+                    <h3>Deluxe Room N7</h3>
+                    <p>Modern minimalism meets ultimate comfort.</p>
+                    <div class="card-footer">
+                        <span class="price">₹3,500<span>/night</span></span>
+                        <button onclick="location.href='bookroom.html?room=N7'" class="btn-book">Reserve</button>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400" alt="Business Suite">
-                <div class="card-content">
-                    <h3>Business Suites</h3>
-                    <p>Work in comfort.</p>
-                    <a href="bookroom.html" class="btn-text">Check Availability →</a>
-                </div>
-            </div>
-        </section>
+        </div>
     </main>
 
+    <script src="script.js"></script>
     <script>
-        // Check login status on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const authLinks = document.getElementById('auth-links');
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-
-            if (isLoggedIn === 'true') {
-                // Change header to "Member" view
-                authLinks.innerHTML = `
-                    <a href="bookroom.html" class="btn btn-primary">Book Now</a>
-                    <button onclick="logout()" class="btn" style="background:none; border:none; color:#555; cursor:pointer; font-weight:bold;">Logout</button>
-                `;
-            }
-        });
-
-        function logout() {
-            localStorage.removeItem('isLoggedIn'); // Clear the login flag
-            window.location.href = 'index.html';    // Refresh to show guest view
-        }
-    </script>
+    // Check for userId (camelCase) or user_id (snake_case)
+    const name = localStorage.getItem('userName') || 'Guest';
+    const id = localStorage.getItem('userId') || localStorage.getItem('user_id') || 'BMS-2026-0000';
+    
+    const userDisplay = document.getElementById('userDisplay');
+    if (userDisplay) {
+        userDisplay.innerHTML = `Hi, <strong>${name}</strong> (${id})`;
+    }
+</script>
 </body>
 </html>

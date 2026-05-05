@@ -5,68 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | BookMySuite</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:,">
-    <style>
-        /* Admin-specific layout enhancements */
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: var(--dark-slate); color: white; font-weight: 600; }
-        tr:hover { background-color: #fcfcfc; }
-        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
-        .confirmed { background: #e1f5e9; color: #2e7d32; }
-        .pending { background: #fff3e0; color: #ef6c00; }
-    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <span class="brand-name">BookMySuite Admin</span>
-            <a href="login.html" class="btn" id="logoutBtn">Logout</a>
-        </nav>
-    </header>
+    <nav>
+        <h2>BookMySuite Admin</h2>
+        <button onclick="logout()" class="btn btn-primary">Logout</button>
+    </nav>
 
-    <main style="padding: 40px 5%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Recent Bookings (All India)</h2>
-            <!-- Search Bar: The 'id' must match what's in script.js -->
-            <input type="text" id="adminSearch" placeholder="Search by name, suite, or status..." 
-                   style="width: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <main style="padding: 30px 5%;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+            <div>
+                <h3>Room Inventory Control</h3>
+                <p>Manage room IDs (e.g., S7, N7) and availability.</p>
+            </div>
+            <button class="btn btn-primary">+ Add New Room</button>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Suite Type</th>
-                    <th>Status</th>
-                    <th>Total (incl. GST)</th>
-                </tr>
-            </thead>
-            <!-- The 'id' here allows script.js to target these rows for filtering -->
-            <tbody id="bookingTable">
-                <tr>
-                    <td>Rahul Sharma</td>
-                    <td>Royal Heritage</td>
-                    <td><span class="status-pill confirmed">Confirmed</span></td>
-                    <td>₹10,080.00</td>
-                </tr>
-                <tr>
-                    <td>Priya Patel</td>
-                    <td>Executive Suite</td>
-                    <td><span class="status-pill pending">Pending</span></td>
-                    <td>₹6,158.88</td>
-                </tr>
-                <tr>
-                    <td>Emmanuel Suresh</td>
-                    <td>Deluxe Suite</td>
-                    <td><span class="status-pill confirmed">Confirmed</span></td>
-                    <td>₹4,478.00</td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
+       <section class="active-bookings">
+    <h2>Active Bookings & Stay Duration</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Customer</th>
+                <th>Room ID</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Days</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="bookingsTableBody">
+            <!-- Data will be injected here -->
+        </tbody>
+    </table>
+</section>
 
-    <!-- This link makes the search and logout logic function -->
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

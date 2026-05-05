@@ -1,104 +1,57 @@
 const express = require('express');
 const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const path = require('path');
 const cors = require('cors');
-
 const app = express();
 
-// --- 1. Middleware ---
 app.use(cors());
-// This allows the server to understand JSON sent from your fetch() call
-app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(__dirname));
 
-app.use(session({
-    secret: 'indian_stay_secret',
-    resave: false,
-    saveUninitialized: true
-}));
-
-// --- 2. Database Connection ---
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',      // XAMPP default
-    password: '',      // XAMPP default is blank
-    database: 'bookmysuite_db'
+    host: 'localhost', user: 'root', password: '', database: 'bookmysuite_db'
 });
 
-db.connect(err => {
-    if (err) {
-        console.error('Database connection failed: ' + err.stack);
-        return;
-    }
-    console.log('Connected to MySQL via XAMPP');
-});
-
-// --- 3. Authentication Routes ---
-
-// SIGNUP ROUTE
+// User Registration with Unique ID Generation
 app.post('/signup', (req, res) => {
-    const { name, email, password, role } = req.body;
-    const sql = 'INSERT INTO Users (full_name, email, password_hash, role) VALUES (?, ?, ?, ?)';
-    
-    db.query(sql, [name, email, password, role || 'user'], (err) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: "Registration failed. Email might exist." });
-        }
-        res.json({ success: true, message: "Signup successful! Please login." });
+    const { name, email, password, role, phone } = req.body;
+    // Format: BMS-YEAR-RANDOM (e.g., BMS-2026-8821)
+    const userId = `BMS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const sql = 'INSERT INTO Users (user_id, full_name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?, ?)';
+    db.query(sql, [userId, name, email, password, role, phone], (err) => {
+        if (err) return res.status(500).json({ success: false });
+        res.json({ success: true, userId });
     });
 });
 
-// LOGIN ROUTE
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const sql = 'SELECT * FROM Users WHERE email = ? AND password_hash = ?';
-    
-    db.query(sql, [email, password], (err, results) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: "Database error." });
-        }
-
-        if (results.length > 0) {
-            // Store user in session
-            req.session.user = results[0];
-            
-            // Send JSON with the redirect path back to the frontend
-            res.json({ 
-                success: true, 
-                message: "Login successful",
-                redirect: results[0].role === 'admin' ? '/admin.html' : '/homepage.html' 
-            });
-        } else {
-            res.status(401).json({ success: false, message: "Invalid email or password." });
-        }
+// Booking Submission & Room Update
+app.post('/book', (req, res) => {
+    const { userId, roomId, checkIn, checkOut, amount } = req.body;
+    const sql = 'INSERT INTO Bookings (user_id, room_id, check_in, check_out, amount, status) VALUES (?, ?, ?, ?, ?, "Booked")';
+    db.query(sql, [userId, roomId, checkIn, checkOut, amount], (err) => {
+        // Also update the Room status to 'In Use'
+        db.query('UPDATE Rooms SET status = "In Use" WHERE room_id = ?', [roomId]);
+        res.json({ success: true });
     });
 });
+res.json({
+    success: true,
+    userId: user.user_id, // This maps the DB column 'user_id' to the JSON key 'userId'
+    userName: user.full_name,
+    role: user.role,
+    redirect: user.role === 'admin' ? 'admin.html' : 'homepage.html'
+});
+app.post('/book-room', (req, res) => {
+    const { user_id, room_id, check_in, check_out } = req.body;
 
-// --- 4. Booking Route ---
-app.post('/api/book', (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ success: false, message: "Please login first." });
-    }
+    const sql = 'INSERT INTO Bookings (user_id, room_id, check_in, check_out) VALUES (?, ?, ?, ?)';
     
-    const { room_name, amount } = req.body;
-    const sql = 'INSERT INTO Bookings (user_id, room_name, total_amount) VALUES (?, ?, ?)';
-    
-    db.query(sql, [req.session.user.user_id, room_name, amount], (err) => {
+    db.query(sql, [user_id, room_id, check_in, check_out], (err, result) => {
         if (err) {
-            return res.status(500).json({ success: false, message: "Booking error." });
+            console.error(err);
+            return res.status(500).json({ success: false, message: "Database Error" });
         }
-        res.json({ success: true, message: "Booking successful!" });
+        res.json({ success: true, message: "Booking saved!" });
     });
 });
-
-// --- 5. Static Files (MUST BE LAST) ---
-// This serves your HTML, CSS, and JS files
-app.use(express.static(__dirname)); 
-
-// Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`BookMySuite running at http://localhost:${PORT}`);
-});
+app.listen(3000, () => console.log('BookMySuite Secure Server active on port 3000'));

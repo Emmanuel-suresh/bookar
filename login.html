@@ -5,39 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | BookMySuite</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:,">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="brand-name">BookMySuite</div>
-            <a href="homepage.html" class="btn">Home</a>
-        </nav>
-    </header>
-
-    <main class="auth-container">
+    <div class="auth-container">
         <h2>Welcome Back</h2>
-        <p style="margin-bottom: 20px; color: #666;">Please enter your details to continue.</p>
-        
-        <!-- The action targets the app.post('/login') route in server.js -->
-        <form action="/login" method="POST" id="loginForm">
+        <form id="loginForm">
             <label>Email Address</label>
             <input type="email" name="email" placeholder="email@example.com" required>
 
             <label>Password</label>
-            <input type="password" name="password" placeholder="Enter your password" required>
+            <div class="pass-wrapper">
+                <input type="password" id="loginPass" name="password" required>
+                <span class="toggle-pass" onclick="togglePassword('loginPass')">👁️</span>
+            </div>
+
+            <label>Login As</label>
+            <select name="role">
+                <option value="user">Traveler</option>
+                <option value="admin">Hotel Admin</option>
+            </select>
             
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
-                Login
-            </button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Login</button>
         </form>
-
-        <p style="margin-top: 20px; text-align: center;">
-            New to BookMySuite? <a href="signup.html" style="color: var(--primary-teal);">Create an account</a>
+        <p style="margin-top: 15px; text-align: center;">
+            Don't have an account? <a href="signup.html" style="color: var(--primary-teal);">Register here</a>
         </p>
-    </main>
+    </div>
 
-    <!-- Essential to link script.js for potential validation and UI logic -->
     <script src="script.js"></script>
 </body>
 </html>

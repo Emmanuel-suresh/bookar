@@ -3,62 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Your Suite | BookMySuite</title>
+    <title>Book Room | BookMySuite</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:,">
 </head>
 <body>
     <header>
         <nav>
             <div class="brand-name">BookMySuite</div>
-            <div>
-                <a href="homepage.html" class="btn">Cancel</a>
-            </div>
+            <a href="homepage.html" class="btn">Back to Home</a>
         </nav>
     </header>
 
-    <main class="auth-container" style="max-width: 600px;">
-        <h2>Confirm Your Stay</h2>
-        <p style="color: #666; margin-bottom: 20px;">Complete the details below to finalize your booking.</p>
+    <main class="auth-container" style="max-width: 650px;">
+        <div id="booking-interface">
+            <h2>Complete Your Booking</h2>
+            <form id="bookingForm">
+                <label>Assigned Room ID</label>
+                <input type="text" id="roomIdDisplay" name="room_id" readonly style="background: #f0f0f0;">
 
-        <form action="/api/book" method="POST" class="booking-summary">
-            <!-- Hidden inputs to send data to the server -->
-            <input type="hidden" name="room_name" value="Executive Suite">
-            <input type="hidden" name="amount" id="hiddenAmount" value="6158.88">
-
-            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="color: var(--primary-teal);">Executive Suite</h3>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
-                
-                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-                    <span>Base Price (1 Night):</span>
-                    <span>₹5,499.00</span>
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; margin: 5px 0; color: #666;">
-                    <span>GST (12%):</span>
-                    <span id="displayGst">₹659.88</span>
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1;">
+                        <label>Check-in Date</label>
+                        <input type="date" id="checkIn" name="check_in" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Check-out Date</label>
+                        <input type="date" id="checkOut" name="check_out" required>
+                    </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin: 15px 0 5px 0; font-weight: bold; font-size: 1.2rem; color: var(--dark-slate);">
-                    <span>Total Payable:</span>
-                    <span id="totalDisplay">₹6,158.88</span>
+                <label>Upload ID Proof (Aadhaar/Passport)</label>
+                <input type="file" name="govt_id" required>
+
+                <div id="priceBreakdown" style="background: #f4f8f9; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #ddd;">
+                    <p style="display: flex; justify-content: space-between;">Stay Duration: <span id="daysCount">0 nights</span></p>
+                    <p style="display: flex; justify-content: space-between;">Rate per Night: <span>₹4,999</span></p>
+                    <hr style="margin: 10px 0; opacity: 0.2;">
+                    <p style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
+                        Total Amount: <span id="totalPrice">₹0</span>
+                    </p>
                 </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Confirm & Pay</button>
+            </form>
+        </div>
+
+        <!-- Hidden Receipt Section -->
+        <div id="receiptSection" style="display: none;" class="receipt-box">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="color: var(--primary-teal);">Booking Confirmed!</h2>
+                <p>Thank you for choosing BookMySuite.</p>
             </div>
-
-            <label>Check-in Date:</label>
-            <input type="date" name="check_in" required>
-
-            <label>Upload Govt ID (Aadhaar/Voter ID):</label>
-            <input type="file" name="govt_id" accept="image/*,application/pdf" required>
-
-            <button type="submit" id="confirmBooking" class="btn btn-primary" style="margin-top: 20px;">
-                Confirm & Pay at Hotel
-            </button>
-        </form>
+            <div style="border-top: 2px solid #eee; padding-top: 20px;">
+                <p><strong>Booking Receipt</strong></p>
+                <p>User ID: <span id="recUserId"></span></p>
+                <p>Room Number: <span id="recRoomId"></span></p>
+                <p>Stay: <span id="recDates"></span></p>
+                <p>Total Paid: <strong id="recTotal"></strong></p>
+            </div>
+            <button onclick="window.print()" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Download Receipt (PDF)</button>
+        </div>
     </main>
 
-    <!-- Essential: Link your frontend logic -->
     <script src="script.js"></script>
+    <script>
+        // Ensure the DOM is fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+            // Detect Room ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const room = urlParams.get('room') || 'S7';
+            const roomIdInput = document.getElementById('roomIdDisplay');
+            if(roomIdInput) roomIdInput.value = room;
+
+            const checkIn = document.getElementById('checkIn');
+            const checkOut = document.getElementById('checkOut');
+
+            // Handle Form Submission
+            const bookingForm = document.getElementById('bookingForm');
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    // 1. Get User Info from LocalStorage - Improved check
+                    const userId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+                    
+                    if (!userId) {
+                        alert("Session expired. Please login again.");
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    const bookingData = {
+                        user_id: userId,
+                        room_id: document.getElementById('roomIdDisplay').value,
+                        check_in: checkIn.value,
+                        check_out: checkOut.value
+                    };
+
+                    try {
+                        // 2. SEND DATA TO SERVER
+                        const response = await fetch('http://localhost:3000/book-room', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(bookingData)
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // 3. SHOW RECEIPT
+                            document.getElementById('booking-interface').style.display = 'none';
+                            document.getElementById('receiptSection').style.display = 'block';
+                            
+                            document.getElementById('recUserId').innerText = userId;
+                            document.getElementById('recRoomId').innerText = bookingData.room_id;
+                            document.getElementById('recDates').innerText = `${checkIn.value} to ${checkOut.value}`;
+                            document.getElementById('recTotal').innerText = document.getElementById('totalPrice').innerText;
+                        } else {
+                            alert("Booking failed: " + result.message);
+                        }
+                    } catch (error) {
+                        console.error("Booking Error:", error);
+                        alert("Could not connect to server.");
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
