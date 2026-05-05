@@ -3,44 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | BookMySuite</title>
+    <title>Admin Dashboard | BookMySuite</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Admin specific styles */
+        .admin-container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #008080;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            background-color: #e6f4ea;
+            color: #1e7e34;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <h2>BookMySuite Admin</h2>
-        <button onclick="logout()" class="btn btn-primary">Logout</button>
-    </nav>
+    <header>
+        <nav>
+            <div class="brand-name">BookMySuite Admin</div>
+            <a href="login.html" class="btn" onclick="localStorage.clear()">Logout</a>
+        </nav>
+    </header>
 
-    <main style="padding: 30px 5%;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
-            <div>
-                <h3>Room Inventory Control</h3>
-                <p>Manage room IDs (e.g., S7, N7) and availability.</p>
-            </div>
-            <button class="btn btn-primary">+ Add New Room</button>
+    <div class="admin-container">
+        <div class="header-flex">
+            <h2>Active Bookings & Stay Duration</h2>
+            <button class="btn" onclick="fetchBookings()">Refresh Data</button>
         </div>
 
-       <section class="active-bookings">
-    <h2>Active Bookings & Stay Duration</h2>
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Customer</th>
-                <th>Room ID</th>
-                <th>Check-In</th>
-                <th>Check-Out</th>
-                <th>Days</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="bookingsTableBody">
-            <!-- Data will be injected here -->
-        </tbody>
-    </table>
-</section>
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Customer Name</th>
+                    <th>Room ID</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Days</th>
+                    <th>ID Proof</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody">
+                <!-- Data will be inserted here by JavaScript -->
+                <tr>
+                    <td colspan="8" style="text-align:center;">Loading bookings...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<script src="script.js"></script>
+    <script>
+        // Function to fetch data from Node.js server
+        async function fetchBookings() {
+            try {
+                const response = await fetch('http://localhost:3000/admin/bookings');
+                const bookings = await response.json();
+                
+                const tableBody = document.getElementById('adminTableBody');
+                tableBody.innerHTML = ''; // Clear the loading message
+
+                if (bookings.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No bookings found.</td></tr>';
+                    return;
+                }
+
+                bookings.forEach(booking => {
+                    const row = document.createElement('tr');
+
+                    // FIX: Calculate stay duration locally to avoid "undefined"
+                    const start = new Date(booking.check_in);
+                    const end = new Date(booking.check_out);
+                    const diffTime = Math.abs(end - start);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    // FIX: Use exact database column names from your JOIN query
+                    row.innerHTML = `
+                        <td>${booking.user_id}</td>
+                        <td>${booking.full_name}</td>
+                        <td>${booking.room_id}</td>
+                        <td>${new Date(booking.check_in).toLocaleDateString('en-GB')}</td>
+                        <td>${new Date(booking.check_out).toLocaleDateString('en-GB')}</td>
+                        <td>${diffDays} days</td>
+                        <td>${booking.identity_proof || 'N/A'}</td>
+                        <td><span class="status-badge">Confirmed</span></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Error fetching bookings:", err);
+                document.getElementById('adminTableBody').innerHTML = 
+                    '<tr><td colspan="8" style="text-align:center; color:red;">Failed to connect to server.</td></tr>';
+            }
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', fetchBookings);
+    </script>
 </body>
 </html>

@@ -21,14 +21,17 @@ app.post('/signup', (req, res) => {
 
     const sql = 'INSERT INTO Users (user_id, full_name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?, ?)';
     db.query(sql, [userId, name, email, password, role, phone], (err) => {
-        if (err) return res.status(500).json({ success: false });
+        if (err) {
+            console.error("Signup Error:", err.message);
+            return res.status(500).json({ success: false });
+        }
         res.json({ success: true, userId });
     });
 });
 
 // 2. User Login
 app.post('/login', (req, res) => {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
     const sql = 'SELECT * FROM Users WHERE email = ? AND password_hash = ?';
     
     db.query(sql, [email, password], (err, results) => {
@@ -36,7 +39,6 @@ app.post('/login', (req, res) => {
 
         if (results.length > 0) {
             const user = results[0];
-            // Fixed the logic here to send back the user data correctly
             res.json({
                 success: true,
                 userId: user.user_id,
@@ -50,38 +52,35 @@ app.post('/login', (req, res) => {
     });
 });
 
-// 3. Room Booking
+// 3. Room Booking (Fixed for room_id and identity_proof)
 app.post('/book-room', (req, res) => {
-    const { user_id, room_id, check_in, check_out } = req.body;
+    const { user_id, room_id, check_in, check_out, identity_proof } = req.body;
 
-    const sql = 'INSERT INTO Bookings (user_id, room_id, check_in, check_out) VALUES (?, ?, ?, ?)';
+    const sql = 'INSERT INTO Bookings (user_id, room_id, check_in, check_out, identity_proof) VALUES (?, ?, ?, ?, ?)';
     
-    db.query(sql, [user_id, room_id, check_in, check_out], (err, result) => {
+    db.query(sql, [user_id, room_id, check_in, check_out, identity_proof], (err, result) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ success: false, message: "Database Error" });
+            console.error("DATABASE ERROR:", err.message); 
+            return res.status(500).json({ success: false, message: err.message });
         }
         
-        // Optional: Update room status to 'In Use'
+        // Update room status to 'In Use'
         db.query('UPDATE Rooms SET status = "In Use" WHERE room_id = ?', [room_id]);
-        
         res.json({ success: true, message: "Booking saved!" });
     });
 });
 
-// 4. Admin View: Get all bookings
+// 4. Admin View
 app.get('/admin/bookings', (req, res) => {
     const sql = `
-        SELECT b.user_id, u.full_name, b.room_id, b.check_in, b.check_out, 
-        DATEDIFF(b.check_out, b.check_in) AS stay_days 
+        SELECT b.user_id, u.full_name, b.room_id, b.check_in, b.check_out, b.identity_proof 
         FROM Bookings b 
         JOIN Users u ON b.user_id = u.user_id
     `;
-
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });
 });
 
-app.listen(3000, () => console.log('BookMySuite Secure Server active on port 3000'));
+app.listen(3000, () => console.log('BookMySuite Server active on port 3000'));
