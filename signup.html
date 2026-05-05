@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join BookMySuite | Signup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="brand-name">BookMySuite</div>
+            <a href="index.html" class="btn">Back to Home</a>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <h2>Create Account</h2>
+        <p style="margin-bottom: 20px; color: #666;">Experience luxury across India.</p>
+        
+        <!-- The 'action' must match your app.post('/signup') in server.js -->
+        <form action="/signup" method="POST" id="signupForm">
+            <label>Full Name (as per Govt ID)</label>
+            <input type="text" name="name" placeholder="e.g. Emmanuel Suresh" required>
+
+            <label>Email Address</label>
+            <input type="email" name="email" placeholder="email@example.com" required>
+
+            <label>Password</label>
+            <!-- The 'name="password"' is used by both JS and the Server -->
+            <input type="password" name="password" placeholder="Min. 8 chars + special symbol" required>
+            <small style="color: #777; display: block; margin-bottom: 10px;">
+                Required: 8+ characters, 1 special symbol (!@#$), and 1 number.
+            </small>
+            
+            <label style="display:block; margin-top:10px;">Register as:</label>
+            <select name="role">
+                <option value="user">Traveler</option>
+                <option value="admin">Hotel Admin</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                Sign Up
+            </button>
+        </form>
+        
+        <p style="margin-top: 20px; text-align: center;">
+            Already have an account? <a href="login.html" style="color: var(--primary-teal);">Login here</a>
+        </p>
+    </main>
+
+    <!-- This script tag must be at the very bottom to activate validation -->
+    <script src="script.js"></script>
+</body>
+</html>

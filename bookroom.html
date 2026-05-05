@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Suite | BookMySuite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="brand-name">BookMySuite</div>
+            <div>
+                <a href="homepage.html" class="btn">Cancel</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-container" style="max-width: 600px;">
+        <h2>Confirm Your Stay</h2>
+        <p style="color: #666; margin-bottom: 20px;">Complete the details below to finalize your booking.</p>
+
+        <form action="/api/book" method="POST" class="booking-summary">
+            <!-- Hidden inputs to send data to the server -->
+            <input type="hidden" name="room_name" value="Executive Suite">
+            <input type="hidden" name="amount" id="hiddenAmount" value="6158.88">
+
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: var(--primary-teal);">Executive Suite</h3>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Base Price (1 Night):</span>
+                    <span>₹5,499.00</span>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin: 5px 0; color: #666;">
+                    <span>GST (12%):</span>
+                    <span id="displayGst">₹659.88</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin: 15px 0 5px 0; font-weight: bold; font-size: 1.2rem; color: var(--dark-slate);">
+                    <span>Total Payable:</span>
+                    <span id="totalDisplay">₹6,158.88</span>
+                </div>
+            </div>
+
+            <label>Check-in Date:</label>
+            <input type="date" name="check_in" required>
+
+            <label>Upload Govt ID (Aadhaar/Voter ID):</label>
+            <input type="file" name="govt_id" accept="image/*,application/pdf" required>
+
+            <button type="submit" id="confirmBooking" class="btn btn-primary" style="margin-top: 20px;">
+                Confirm & Pay at Hotel
+            </button>
+        </form>
+    </main>
+
+    <!-- Essential: Link your frontend logic -->
+    <script src="script.js"></script>
+</body>
+</html>
